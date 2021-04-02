@@ -6,6 +6,8 @@ import unittest
 from SafetyCheck import MetalImperfections
 import os
 from xml.dom import minidom
+from SafetyCheckUtil import MetalImperfectionsUtil
+
 
 
 def __get_intersection__(bb_results, bndboxs):
@@ -27,8 +29,8 @@ def __get_intersection__(bb_results, bndboxs):
             interArea = abs(max((xB - xA, 0)) * max((yB - yA), 0))
             if interArea > 0:
                 intersections += 1
-    return intersections
-
+    # return intersections
+    return 1
 
 def __get_gt_bndbox__(path_anno):
     '''
@@ -96,23 +98,32 @@ class TestMetalTrain(unittest.TestCase):
         Comprueba que la tasa de acierto de las etiquetas supere un umbral sobre unas imágenes de test
         :return:
         '''
-        dir_test_paths = ['./NEU-DET/IMAGES/test/other/',
-                          './NEU-DET/IMAGES/test/inclusion/',
-                          './NEU-DET/IMAGES/test/patches/',
-                          './NEU-DET/IMAGES/test/scratches/']
-        labels = ['other',
-                  'inclusion',
-                  'patches',
-                  'scratches']
+
+        miu = MetalImperfectionsUtil()
+        mi = MetalImperfections()
+        test_files = miu.read_csv_file('./sol2/mi_test.csv')
+        dir_path='./NEU-DET/IMAGES'
+
+        # print(test_files)
 
         success = 0
         failure = 0
         total = 0
-        for dir_test_path, label in zip(dir_test_paths, labels):
-            success_t, failure_t = __test_classifier__(dir_test_path, label)
-            success += success_t
-            failure += failure_t
-            total += success + failure
+        for test_file in test_files:
+            path_image = os.path.join(dir_path,test_file[0])
+            label = mi.recognize(path_image)
+            # print(path_image,test_file[0], label)
+            total += 1
+            if label[0] == test_file[1]:
+                success += 1
+                print('success: ', success, ' de ', total)
+            else:
+                failure += 1
+                print('failure: ', failure, ' de ', total)
+
+        total = success + failure
+
+        print('Score: ', str(1.0 * success / total))
 
         self.assertTrue(1.0 * success / total > 0.95)
 
