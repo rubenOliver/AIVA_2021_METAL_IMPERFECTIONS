@@ -6,12 +6,14 @@ from PIL import Image, ImageOps
 from SafetyCheckUtil import MetalImperfectionsUtil
 from tensorflow.keras.models import load_model
 import tensorflow as tf
+from Patches_localizator import Patches_localizator
+from Scratch_localizator import Scratch_localizator
 
 
 class MetalImperfections:
     def __init__(self):
         self.__gpu_setup()
-        self.cnn = load_model('./sol2/weights_improvement.52-0.0150.h5')
+        self.cnn = load_model('./code_github/sol2/weights_improvement.52-0.0150.h5')
 
     def recognize(self, path_image):
         '''
@@ -34,8 +36,16 @@ class MetalImperfections:
 
         # print(np.argmax(yhat[0, :]), '<-- yhat')
         label = miu.get_label_text(np.argmax(yhat[0, :]))
+        
+        bounding_boxes = []
+        if label == 'patches':
+            sratch_localizator = Scratch_localizator()
+            bounding_boxes = sratch_localizator.localize(path_image)
+        elif label == 'scratches':
+            patches_localizator = Patches_localizator()
+            bounding_boxes = patches_localizator.localize(path_image)
 
-        return label, []
+        return label, bounding_boxes
 
 
     def __getBndbox__(self, image, label):
