@@ -1,6 +1,6 @@
 import argparse
 import os
-from SafetyCheck import MetalImperfections
+from SafetyCheck import RecognizerMetalImperfections
 import cv2 as cv
 
 if __name__ == '__main__':
@@ -13,7 +13,7 @@ if __name__ == '__main__':
     images = os.listdir(args.images_path)
 
     #Create the recognizer class instance
-    metalImperfections = MetalImperfections()
+    metalImperfections = RecognizerMetalImperfections()
 
     for image in images:
         # Recognize the image getting the imperfection type and the bounding boxes
