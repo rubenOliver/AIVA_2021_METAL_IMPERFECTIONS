@@ -193,8 +193,8 @@ class TestMetalTrain(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    parser=argparse.ArgumentParser(description='Path to images')
-    parser.add_argument('images_path', metavar='images_path', type=str)
+    parser=argparse.ArgumentParser(description='Path to data')
+    parser.add_argument('data_path', metavar='data_path', type=str)
     args=parser.parse_args()
-    TestMetalTrain.dir_path = args.images_path
+    TestMetalTrain.dir_path = args.data_path
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
