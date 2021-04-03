@@ -106,7 +106,7 @@ class TestMetalTrain(unittest.TestCase):
         # Load all images with label patches
         file_path=os.path.join(TestMetalTrain.dir_path,
                                'IMAGES',
-                               'scratches*.jpg')
+                               'patches*.jpg')
         paths_images=glob.glob(file_path)
         
         total = 0
