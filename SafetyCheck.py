@@ -1,8 +1,10 @@
+# This code has been carried out for the Applications subject of the
+# Master's Degree in Computer Vision at the Rey Juan Carlos University
+# of Madrid.
+# Date: April 2021
+# Authors: Rubén Oliver, Ismael Linares and Juan Luis Carrillo
+
 import numpy as np
-import os
-import sys
-import matplotlib.pyplot as plt
-from PIL import Image, ImageOps
 from SafetyCheckUtil import MetalImperfectionsUtil
 from tensorflow.keras.models import load_model
 import tensorflow as tf
@@ -10,33 +12,46 @@ from Patches_localizator import Patches_localizator
 from Scratch_localizator import Scratch_localizator
 
 
-class MetalImperfections:
+class RecognizerMetalImperfections:
+    '''
+
+    '''
     def __init__(self):
         self.__gpu_setup()
+
+        # Loading the best neural network .h5 model
         self.cnn = load_model('./CNN_UTIL/weights_improvement.52-0.0150.h5')
+
+    def __gpu_setup(self):
+        '''
+        This method is necessary to properly configure tensorflow.
+        Without this call, this library may cause some failure
+        :return:
+        '''
+        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+        config=tf.compat.v1.ConfigProto()
+        config.gpu_options.allow_growth=True
+        tf.compat.v1.Session(config=config)
 
     def recognize(self, path_image):
         '''
-        Clasifica la imagen y, a continuación, se llama al método
-        __getBndbox__ para obtener una lista de bounding boxes
-        :param path_image: Ruta del fichero de la imagen
-        :return: Tupla con la predicción del error y la lista de bounding boxes
+        Classify the image and get a list of bounding boxes.
+        :param path_image: Path of the image file
+        :return: Tuple with error prediction and bounding box list
         '''
         miu = MetalImperfectionsUtil()
-        # test_files=miu.read_csv_file('./mi_test.csv')
-        #
-        # dir_path='./NEU-DET/IMAGES'
         x_test = miu.read_one_image(path_image)
 
-        # Se normalizan los valores
+        # Data normalization
         x_test = x_test.astype('float32')/255.0
 
-        # Se aplica el método predict sobre los ejemplos de test con ruido
+        # The predict method is applied to the image
         yhat = self.cnn.predict(x_test)
 
-        # print(np.argmax(yhat[0, :]), '<-- yhat')
+        # Get the label in text format
         label = miu.get_label_text(np.argmax(yhat[0, :]))
-        
+
+        # Get the bounding boxes for scratches and patches classes
         bounding_boxes = []
         if label == 'scratches':
             sratch_localizator = Scratch_localizator()
@@ -48,24 +63,11 @@ class MetalImperfections:
         return label, bounding_boxes
 
 
-    def __getBndbox__(self, image, label):
-        '''
-        Calcula la lista de boundig boxes de una imagen de un determinado fallo.
-        :param image: La imagen
-        :param label: Etiqueta clasificada
-        :return: Lista de bounding boxes
-        '''
-        pass
-
-    def __gpu_setup(self):
-        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
-        config=tf.compat.v1.ConfigProto()
-        config.gpu_options.allow_growth=True
-        sess=tf.compat.v1.Session(config=config)
 
 
 if __name__ == '__main__':
-    mi = MetalImperfections()
+    # Create instances of the class and recognize some examples
+    mi = RecognizerMetalImperfections()
     label, bndbox = mi.recognize('./NEU-DET/IMAGES/scratches_30.jpg')
     print(label)
     label, bndbox = mi.recognize('./NEU-DET/IMAGES/inclusion_1.jpg')

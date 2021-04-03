@@ -1,9 +1,12 @@
-"""
-Fichero con los test unitarios del entrenamiento y del reconocedor
-"""
+# This code has been carried out for the Applications subject of the
+# Master's Degree in Computer Vision at the Rey Juan Carlos University
+# of Madrid.
+# Contains the unit tests for the SafetyCheck library
+# Date: April 2021
+# Authors: Rubén Oliver, Ismael Linares and Juan Luis Carrillo
 
 import unittest
-from SafetyCheck import MetalImperfections
+from SafetyCheck import RecognizerMetalImperfections
 import os
 from xml.dom import minidom
 from SafetyCheckUtil import MetalImperfectionsUtil
@@ -11,7 +14,6 @@ import glob
 import numpy as np
 from Patches_localizator import Patches_localizator
 from Scratch_localizator import Scratch_localizator
-import cv2 as cv
 
 
 def __find_index__(target, array):
@@ -22,14 +24,13 @@ def __find_index__(target, array):
 
 def __get_intersection__(bb_results, bndboxs):
     '''
-    Se calculan las intersecciones
-    :param bb_results: Los bounding-boxes del detector
-    :param bndboxs: Los bounding-boxes del ground-truth
-    :return: IOU medio para todas las intersecciones
+    Calculate the intersections of two bounding-boxe sets.
+    :param bb_results: Detector bounding-boxes
+    :param bndboxs: Ground-truth bounding-boxes
+    :return: Average IOU for all intersections
     '''
-    auxInter = []
 
-    # Lista con el IOU de cada bndbox del ground thruth con cada prediccion
+    # List with the IOU of each bndbox of the ground thruth with each prediction
     bb_intersections = []
     for bndbox in bndboxs:
         auxInter = []
@@ -39,19 +40,19 @@ def __get_intersection__(bb_results, bndboxs):
             xB = min(bb_result[2], bndbox[2])
             yB = min(bb_result[3], bndbox[3])
 
-            # Area de interseccion entre rectangulos
+            # Area of ​​intersection between rectangles
             interArea = max(0, (xB - xA + 1)) * max(0,(yB - yA + 1))
 
-            # Area para cada bounding box del ground thruth y prediccion
+            # Area for each bounding box for ground truth and prediction
             boxAArea = (bb_result[2] - bb_result[0] + 1) * (bb_result[3] - bb_result[1] + 1)
             boxBArea = (bndbox[2] - bndbox[0] + 1) * (bndbox[3] - bndbox[1] + 1)
 
-            # Calculo de intersection over union para el grado de acierto
+            # Calculation of IOU for the degree of success
             iou = interArea / float(boxAArea + boxBArea - interArea)
             auxInter.append(iou)
         bb_intersections.append(auxInter)
     final_intersections = []
-    counter = 0
+
     gt_len = len(bndboxs)
     for i in range(0, gt_len):
         if not bb_intersections[0]:
@@ -61,8 +62,9 @@ def __get_intersection__(bb_results, bndboxs):
             maxValue = np.max(bb_intersections)
             i, j = __find_index__(maxValue, bb_intersections)
 
-            # Se elimina de la lista el bndbox del GT y la columna con el bndbox predicho 
-            # para solo tener un correspondencia para cada bndbox del GT
+            #
+            # The GT bndbox and the column with the predicted bndbox are removed from the list
+            # to only have a match for each GT bndbox
             del bb_intersections[i]
             if bb_intersections:
                 for row in bb_intersections:
@@ -72,9 +74,9 @@ def __get_intersection__(bb_results, bndboxs):
 
 def __get_gt_bndbox__(path_anno):
     '''
-    Obtiene los bounding-boxes del ground-truth
-    :param path_anno: Ruta de los documentos de anotaciones
-    :return: Lista de bounding-boxes del ground-truth
+    Get the bounding-boxes of the ground-truth
+    :param path_anno: Annotations documents path
+    :return: Ground-truth bounding-boxes list
     '''
     bndboxs = []
     doc = minidom.parse(path_anno)
@@ -94,13 +96,15 @@ class TestMetalTrain(unittest.TestCase):
 
     def test_localize_patches(self):
         '''
-        Comprueba la etiqueta y que al menos un bounding-box intersecciones con el del ground-truth de una de las
-        imágenes
+        Check the label and that at least one bounding-box intersects
+        with the one of the ground-truth of one of the images
         :return:
         '''
-        # Cambiar path donde esten situadas las imagenes
+
+        # Path of image files
         file_path = '../../NEU-DET/'
-        # Se cargan todas las imagenes de tipo patches
+
+        # Load all images with label patches
         paths_images = glob.glob(file_path + 'IMAGES/patches*.jpg')
         
         total = 0
@@ -109,31 +113,33 @@ class TestMetalTrain(unittest.TestCase):
         for path_image in paths_images:
             file_name = os.path.basename(path_image)
             file_name = os.path.splitext(file_name)[0]
-            # Cargamos el xml correspondiente de la imagen
+
+            # Load .xml file with image bndboxs
             path_anno = file_path + 'ANNOTATIONS/' + file_name + '.xml'
 
             bndboxs = __get_gt_bndbox__(path_anno)
             patches_localizator = Patches_localizator()
             bb_results = patches_localizator.localize(path_image)
-            # cv.waitKey(0)
             
-            # Suma de todas las medias de IOU de cada imagen
+            # Sum of all IOU means for each image
             intersectionTotal += __get_intersection__(bb_results, bndboxs)
             total += 1
         print("Patches score", intersectionTotal / total)
 
-        #Si la media de IOU es mas de un 50% el test es correcto
+        # If the mean IOU is more than 50% the test is correct
         self.assertTrue((intersectionTotal / total) > 0.50)
 
     def test_localize_scratches(self):
         '''
-        Comprueba la etiqueta y que al menos un bounding-box intersecciones con el del ground-truth de una de las
-        imágenes
+        Check the label and that at least one bounding-box intersects with the one of the
+        ground-truth of one of the images
         :return:
         '''
-        # Cambiar path donde esten las imagenes de Scratches
+
+        # Path of image files
         file_path = '../../NEU-DET/'
-        # Se cargantodas las imagenes de Scratches
+
+        # Load all Scratches images
         paths_images = glob.glob(file_path + 'IMAGES/scratches*.jpg')
         total = 0
         intersectionTotal = 0
@@ -141,11 +147,11 @@ class TestMetalTrain(unittest.TestCase):
         for path_image in paths_images:
             file_name = os.path.basename(path_image)
             file_name = os.path.splitext(file_name)[0]
-            # Cargamos el path del xml para la imagen correspondiente
+
+            # Load .xml file with image bndboxs
             path_anno = file_path + 'ANNOTATIONS/' + file_name + '.xml'
             scratch_localizator = Scratch_localizator()
             bb_results = scratch_localizator.localize(path_image)
-            # cv.waitKey(0)
 
             bndboxs = __get_gt_bndbox__(path_anno)
             intersectionTotal += __get_intersection__(bb_results, bndboxs)
@@ -155,16 +161,14 @@ class TestMetalTrain(unittest.TestCase):
 
     def test_classifier(self):
         '''
-        Comprueba que la tasa de acierto de las etiquetas supere un umbral sobre unas imágenes de test
+        Check that the hit rate of the labels exceeds a threshold on some test images
         :return:
         '''
 
         miu = MetalImperfectionsUtil()
-        mi = MetalImperfections()
+        mi = RecognizerMetalImperfections()
         test_files = miu.read_csv_file('./CNN_UTIL/mi_test.csv')
         dir_path='../../NEU-DET/IMAGES'
-
-        # print(test_files)
 
         success = 0
         failure = 0
@@ -172,7 +176,6 @@ class TestMetalTrain(unittest.TestCase):
         for test_file in test_files:
             path_image = os.path.join(dir_path,test_file[0])
             label, bounding_boxes = mi.recognize(path_image)
-            # print(path_image,test_file[0], label)
             total += 1
             if label == test_file[1]:
                 success += 1
