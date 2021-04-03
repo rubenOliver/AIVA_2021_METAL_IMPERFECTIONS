@@ -13,7 +13,7 @@ from Scratch_localizator import Scratch_localizator
 class MetalImperfections:
     def __init__(self):
         self.__gpu_setup()
-        self.cnn = load_model('./code_github/sol2/weights_improvement.52-0.0150.h5')
+        self.cnn = load_model('./CNN_UTIL/weights_improvement.52-0.0150.h5')
 
     def recognize(self, path_image):
         '''
@@ -38,10 +38,10 @@ class MetalImperfections:
         label = miu.get_label_text(np.argmax(yhat[0, :]))
         
         bounding_boxes = []
-        if label == 'patches':
+        if label == 'scratches':
             sratch_localizator = Scratch_localizator()
             bounding_boxes = sratch_localizator.localize(path_image)
-        elif label == 'scratches':
+        elif label == 'patches':
             patches_localizator = Patches_localizator()
             bounding_boxes = patches_localizator.localize(path_image)
 

@@ -161,7 +161,7 @@ class TestMetalTrain(unittest.TestCase):
 
         miu = MetalImperfectionsUtil()
         mi = MetalImperfections()
-        test_files = miu.read_csv_file('./code_github/sol2/mi_test.csv')
+        test_files = miu.read_csv_file('./CNN_UTIL/mi_test.csv')
         dir_path='../../NEU-DET/IMAGES'
 
         # print(test_files)
