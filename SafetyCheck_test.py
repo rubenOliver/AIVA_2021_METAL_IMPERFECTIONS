@@ -14,6 +14,7 @@ import glob
 import numpy as np
 from Patches_localizator import Patches_localizator
 from Scratch_localizator import Scratch_localizator
+import argparse
 
 
 def __find_index__(target, array):
@@ -93,6 +94,7 @@ def __get_gt_bndbox__(path_anno):
 
 
 class TestMetalTrain(unittest.TestCase):
+    dir_path='./NEU-DET' # Class variable
 
     def test_localize_patches(self):
         '''
@@ -101,11 +103,11 @@ class TestMetalTrain(unittest.TestCase):
         :return:
         '''
 
-        # Path of image files
-        file_path = '../../NEU-DET/'
-
         # Load all images with label patches
-        paths_images = glob.glob(file_path + 'IMAGES/patches*.jpg')
+        file_path=os.path.join(TestMetalTrain.dir_path,
+                               'IMAGES',
+                               'scratches*.jpg')
+        paths_images=glob.glob(file_path)
         
         total = 0
         intersectionTotal = 0
@@ -115,7 +117,9 @@ class TestMetalTrain(unittest.TestCase):
             file_name = os.path.splitext(file_name)[0]
 
             # Load .xml file with image bndboxs
-            path_anno = file_path + 'ANNOTATIONS/' + file_name + '.xml'
+            path_anno = os.path.join(TestMetalTrain.dir_path,
+                                     'ANNOTATIONS',
+                                     file_name + '.xml')
 
             bndboxs = __get_gt_bndbox__(path_anno)
             patches_localizator = Patches_localizator()
@@ -136,11 +140,11 @@ class TestMetalTrain(unittest.TestCase):
         :return:
         '''
 
-        # Path of image files
-        file_path = '../../NEU-DET/'
-
         # Load all Scratches images
-        paths_images = glob.glob(file_path + 'IMAGES/scratches*.jpg')
+        file_path=os.path.join(TestMetalTrain.dir_path,
+                               'IMAGES',
+                               'scratches*.jpg')
+        paths_images=glob.glob(file_path)
         total = 0
         intersectionTotal = 0
 
@@ -149,7 +153,9 @@ class TestMetalTrain(unittest.TestCase):
             file_name = os.path.splitext(file_name)[0]
 
             # Load .xml file with image bndboxs
-            path_anno = file_path + 'ANNOTATIONS/' + file_name + '.xml'
+            path_anno = os.path.join(TestMetalTrain.dir_path,
+                                     'ANNOTATIONS',
+                                     file_name + '.xml')
             scratch_localizator = Scratch_localizator()
             bb_results = scratch_localizator.localize(path_image)
 
@@ -168,28 +174,27 @@ class TestMetalTrain(unittest.TestCase):
         miu = MetalImperfectionsUtil()
         mi = RecognizerMetalImperfections()
         test_files = miu.read_csv_file('./CNN_UTIL/mi_test.csv')
-        dir_path='../../NEU-DET/IMAGES'
 
         success = 0
         failure = 0
         total = 0
         for test_file in test_files:
-            path_image = os.path.join(dir_path,test_file[0])
+            path_image = os.path.join(TestMetalTrain.dir_path,'IMAGES/'+test_file[0])
             label, bounding_boxes = mi.recognize(path_image)
             total += 1
             if label == test_file[1]:
                 success += 1
-                print('success: ', success, ' de ', total)
             else:
                 failure += 1
-                print('failure: ', failure, ' de ', total)
 
         total = success + failure
-
-        print('Score: ', str(1.0 * success / total))
 
         self.assertTrue(1.0 * success / total > 0.95)
 
 
 if __name__ == '__main__':
-    unittest.main()
+    parser=argparse.ArgumentParser(description='Path to images')
+    parser.add_argument('images_path', metavar='images_path', type=str)
+    args=parser.parse_args()
+    TestMetalTrain.dir_path = args.images_path
+    unittest.main(argv=['first-arg-is-ignored'], exit=False)
