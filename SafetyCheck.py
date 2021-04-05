@@ -14,7 +14,7 @@ from Scratch_localizator import Scratch_localizator
 
 class RecognizerMetalImperfections:
     '''
-
+    This class is used to recognize the imperfections.
     '''
     def __init__(self):
         self.__gpu_setup()

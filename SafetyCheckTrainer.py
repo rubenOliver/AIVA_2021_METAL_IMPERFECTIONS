@@ -192,7 +192,7 @@ class MetalImperfectionsTrainer:
         plt.savefig('Model_accuracy.png')
 
 
-    def _predict(self, path_model):
+    def __predict(self, path_model):
         '''
         This method is used only for debugging purposes during the programming phase
         :param path_model: Path of the neural network .h5 model
