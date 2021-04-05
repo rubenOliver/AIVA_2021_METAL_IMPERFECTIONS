@@ -23,5 +23,5 @@ Para la ejecución de la aplicación bajo el sistema operativo Linux Ubuntu 20.0
 * Instalar dependecias del requirements.txt:
     * pip3 install -r requirements.txt
 * Una vez estan las dependencias instaladas, lanzar la aplicación sobre la carpeta de imagenes:
-    * python3 Application.py /path/to/images (Ej. python3 Application.py ./NEU-DEU/IMAGES/)
+    * python3 Application.py /path/to/images (Ej. python3 Application.py ./NEU-DET/IMAGES/)
 
