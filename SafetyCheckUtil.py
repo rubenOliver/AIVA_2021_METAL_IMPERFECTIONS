@@ -23,7 +23,8 @@ class MetalImperfectionsUtil:
         :param file_path: Path of the image
         :return: Return a numpy array with the image in grayscale format
         '''
-        im_gray=cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
+        # im_gray=cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
+        im_gray = cv2.cvtColor(file_path, cv2.COLOR_RGB2GRAY)
         x_data=np.zeros((1, im_gray.shape[0], im_gray.shape[1]), np.uint8)
         x_data[0,:,:] = im_gray
         return x_data

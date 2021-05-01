@@ -11,7 +11,8 @@ class Scratch_localizator(Localizator):
         :return: List with the bounding boxes
         '''
         # Read the image
-        image = cv.imread(path_image)
+        # image = cv.imread(path_image)
+        image = path_image.copy()
 
         # Convert the image to gray scale
         gray = cv.cvtColor(image,cv.COLOR_BGR2GRAY)

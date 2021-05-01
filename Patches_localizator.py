@@ -10,8 +10,8 @@ class Patches_localizator(Localizator):
         :return: List with the bounding boxes
         '''
         # Read the image
-        image = cv.imread(path_image)
-
+        # image = cv.imread(path_image)
+        image = path_image.copy()
         # Convert image to hsv colour space
         hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
         # cv.imshow('hsv', hsv)
