@@ -30,7 +30,7 @@ Para la ejecución de la aplicación bajo el sistema operativo Linux Ubuntu 20.0
 La imagen docker de la aplicación esta disponible en el siguente enlace: [Docker - bullseyemuva/aiva](https://hub.docker.com/r/bullseyemuva/aiva)
 
 Para obtener la imagen docker hay dos opciones disponibles: 
-* Para descargar y ejecutar la imagen docker, con el mismo comando, son los siguientes:
+* Para descargar y ejecutar la imagen docker con el mismo comando, serían los siguientes comandos:
     * En algunos casos, si no tenemos habilitado la conexión de docker con la pantalla de nuestra máquina es necesario realizar este comando: xhost +"local:docker@"
     * sudo docker run --rm -it -p 9000:9000 -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix bullseyemuva/aiva
     * java -jar aiva.jar
