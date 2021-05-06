@@ -3,6 +3,7 @@
 ## Introducción 
 
 El proyecto que se va a realizar consiste en detección de imperfecciones en metales, pudiendo ser estas imperfecciones de tipo moho, arañazos, y manchas. Además de la detección del tipo de imperfección que esté presente en la pieza de metal, en el caso de los arañazos y manchas también se realizará una localización de donde esta situada la imperfección. Siendo por tanto la salida esperada que tiene que cumplir el sistema, la clasificación del tipo de imperfección que contiene la imagen y por otro lado la localización de las mismas. 
+
 Para la realización del proyecto se tiene una base de datos en la que previamente se ha realizado una localización previa de la imperfección. Por tanto, el input recibido para el sistema son imagenes que acotan la pieza a la zona donde hay imperfección.
 
 ## Puesta en marcha
@@ -27,6 +28,7 @@ Para la ejecución de la aplicación bajo el sistema operativo Linux Ubuntu 20.0
 
 ## Despliegue mediante Docker
 La imagen docker de la aplicación esta disponible en el siguente enlace: [Docker - bullseyemuva/aiva](https://hub.docker.com/r/bullseyemuva/aiva)
+
 Para obtener la imagen docker hay dos opciones disponibles: 
 * Para descargar y ejecutar la imagen docker, con el mismo comando, son los siguientes:
     * En algunos casos, si no tenemos habilitado la conexión de docker con la pantalla de nuestra máquina es necesario realizar este comando: xhost +"local:docker@"
