@@ -30,10 +30,15 @@ import javax.sql.rowset.spi.SyncFactory;
 
 
 public class SafetyCheckDetector {    
-    
+    private String hostname ;
+    private int port;  
+
+    public SafetyCheckDetector(String hostname, int port) {
+        this.port = port;
+        this.hostname = new String(hostname);
+    }
+
     public SafetyCheckDetection detect(BufferedImage bImage) throws IOException{
-        String hostname = "localhost";
-        int port = 9000;    
         Socket socket = null;
         
         SafetyCheckDetection detection = null;
@@ -95,6 +100,24 @@ public class SafetyCheckDetector {
 
         return detection;
     }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+    
+    
     
     
     public static void main(String[] args) {
@@ -102,7 +125,7 @@ public class SafetyCheckDetector {
             System.out.println("Indique la ruta de la imagen. Por ejemplo:");
             System.out.println("./NEU-DET/IMAGES/crazing_1.jpg");
         } else {
-            SafetyCheckDetector scDetector = new SafetyCheckDetector();
+            SafetyCheckDetector scDetector = new SafetyCheckDetector("localhost", 9000);
             try{
                 BufferedImage bImage = ImageIO.read(new File(args[0]));
                 SafetyCheckDetection scDetection = scDetector.detect(bImage);
