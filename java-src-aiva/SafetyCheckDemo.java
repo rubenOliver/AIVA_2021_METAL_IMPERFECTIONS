@@ -185,7 +185,7 @@ public class SafetyCheckDemo extends javax.swing.JFrame {
             drawablePanel.setImage(bImage);
             drawablePanel.repaint();
             try{
-                scDetector = new aiva.SafetyCheckDetector();
+                scDetector = new aiva.SafetyCheckDetector("localhost",9000);
                 scDetection = scDetector.detect(bImage);
             } catch(java.io.IOException ex){
                 javax.swing.JOptionPane.showMessageDialog(this,"Se ha producido un error en la detección");
