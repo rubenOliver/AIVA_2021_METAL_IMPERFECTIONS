@@ -43,4 +43,15 @@ Para obtener la imagen docker hay dos opciones disponibles:
 
 Con esto se despliega una interfaz de usuario que permite la selección de las imagenes de la base de datos para su procesamiento y análisis. 
 
-Además esta disponible un procesamiento automático de las imágenes, que mostraran vía mensajes en consola el tipo de imagen procesada y la localización del defecto si procede. Para poder ejecutar esta característica habría que cambiar el comando java -jar aiva.jar por --> java Java_client.java
+Todo este procesamiento esta hecho dentro del docker, sin embargo, también existe la posibilidad de poder hacer una conexión externa al docker. Para ello será necesario realizar los siguientes pasos:
+* Clonar el proyecto a nuestro sistema si no lo hemos hecho ya con el siguiente comando: git clone https://github.com/rubenOliver/AIVA_2021_METAL_IMPERFECTIONS.git
+* Entrar en el proyecto clonado: cd AIVA_2021_METAL_IMPERFECTIONS
+* Compilar las clases Java con los siguientes comandos:
+    * javac -d ./classes -cp ./classes java-src-aiva/aiva/*.java
+    * javac -d ./classes -cp ./classes java-src-aiva/*.java
+* Copiar la carpeta MANIFEST a la localización de los compilados: cp -r META-INF/ ./classes/
+* Movernos a la carpeta de compilados: cd ./classes
+* Crear el jar en la raiz del proyecto: jar cmf META-INF/MANIFEST.MF ../aiva.jar *.class aiva
+* Volver a la carpeta raiz del proyecto: cd ..
+Llegados a este punto es necesario desplegar el docker en una nueva terminal, sin llegar a ejecutar el comando " java -jar aiva.jar "
+Con el docker desplegado lanzamos el jar en nuestra máquina con el comando: java -jar aiva.jar 
