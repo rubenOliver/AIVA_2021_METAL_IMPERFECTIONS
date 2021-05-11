@@ -15,6 +15,7 @@ import numpy as np
 from Patches_localizator import Patches_localizator
 from Scratch_localizator import Scratch_localizator
 import argparse
+import cv2
 
 
 def __find_index__(target, array):
@@ -123,7 +124,8 @@ class TestMetalTrain(unittest.TestCase):
 
             bndboxs = __get_gt_bndbox__(path_anno)
             patches_localizator = Patches_localizator()
-            bb_results = patches_localizator.localize(path_image)
+            im_gray = cv2.imread(path_image, cv2.IMREAD_COLOR)
+            bb_results = patches_localizator.localize(im_gray)
             
             # Sum of all IOU means for each image
             intersectionTotal += __get_intersection__(bb_results, bndboxs)
@@ -157,7 +159,8 @@ class TestMetalTrain(unittest.TestCase):
                                      'ANNOTATIONS',
                                      file_name + '.xml')
             scratch_localizator = Scratch_localizator()
-            bb_results = scratch_localizator.localize(path_image)
+            im_gray = cv2.imread(path_image, cv2.IMREAD_COLOR)
+            bb_results = scratch_localizator.localize(im_gray)
 
             bndboxs = __get_gt_bndbox__(path_anno)
             intersectionTotal += __get_intersection__(bb_results, bndboxs)
@@ -180,7 +183,8 @@ class TestMetalTrain(unittest.TestCase):
         total = 0
         for test_file in test_files:
             path_image = os.path.join(TestMetalTrain.dir_path,'IMAGES/'+test_file[0])
-            label, bounding_boxes = mi.recognize(path_image)
+            im_gray = cv2.imread(path_image, cv2.IMREAD_COLOR)
+            label, bounding_boxes = mi.recognize(im_gray)
             total += 1
             if label == test_file[1]:
                 success += 1

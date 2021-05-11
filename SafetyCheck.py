@@ -10,6 +10,7 @@ from tensorflow.keras.models import load_model
 import tensorflow as tf
 from Patches_localizator import Patches_localizator
 from Scratch_localizator import Scratch_localizator
+import cv2
 
 
 class RecognizerMetalImperfections:
@@ -33,14 +34,14 @@ class RecognizerMetalImperfections:
         config.gpu_options.allow_growth=True
         tf.compat.v1.Session(config=config)
 
-    def recognize(self, path_image):
+    def recognize(self, image):
         '''
         Classify the image and get a list of bounding boxes.
-        :param path_image: Path of the image file
+        :param image: Image to be recognize
         :return: Tuple with error prediction and bounding box list
         '''
         miu = MetalImperfectionsUtil()
-        x_test = miu.read_one_image(path_image)
+        x_test = miu.read_one_image(image)
 
         # Data normalization
         x_test = x_test.astype('float32')/255.0
@@ -55,10 +56,10 @@ class RecognizerMetalImperfections:
         bounding_boxes = []
         if label == 'scratches':
             sratch_localizator = Scratch_localizator()
-            bounding_boxes = sratch_localizator.localize(path_image)
+            bounding_boxes = sratch_localizator.localize(image)
         elif label == 'patches':
             patches_localizator = Patches_localizator()
-            bounding_boxes = patches_localizator.localize(path_image)
+            bounding_boxes = patches_localizator.localize(image)
 
         return label, bounding_boxes
 
@@ -68,12 +69,16 @@ class RecognizerMetalImperfections:
 if __name__ == '__main__':
     # Create instances of the class and recognize some examples
     mi = RecognizerMetalImperfections()
-    label, bndbox = mi.recognize('./NEU-DET/IMAGES/scratches_30.jpg')
+    im_gray = cv2.imread('./NEU-DET/IMAGES/scratches_30.jpg', cv2.IMREAD_COLOR)
+    label, bndbox = mi.recognize(im_gray)
     print(label)
-    label, bndbox = mi.recognize('./NEU-DET/IMAGES/inclusion_1.jpg')
+    im_gray = cv2.imread('./NEU-DET/IMAGES/inclusion_1.jpg', cv2.IMREAD_COLOR)
+    label, bndbox = mi.recognize(im_gray)
     print(label)
-    label, bndbox = mi.recognize('./NEU-DET/IMAGES/scratches_1.jpg')
+    im_gray=cv2.imread('./NEU-DET/IMAGES/scratches_1.jpg', cv2.IMREAD_COLOR)
+    label, bndbox = mi.recognize(im_gray)
     print(label)
-    label, bndbox=mi.recognize('./NEU-DET/IMAGES/crazing_1.jpg')
+    im_gray = cv2.imread('./NEU-DET/IMAGES/crazing_1.jpg', cv2.IMREAD_COLOR)
+    label, bndbox=mi.recognize(im_gray)
     print(label)
 

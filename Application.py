@@ -1,7 +1,7 @@
 import argparse
 import os
 from SafetyCheck import RecognizerMetalImperfections
-import cv2 as cv
+import cv2
 
 if __name__ == '__main__':
     # Read the images path argument
@@ -17,15 +17,16 @@ if __name__ == '__main__':
 
     for image in images:
         # Recognize the image getting the imperfection type and the bounding boxes
-        label, bndboxs = metalImperfections.recognize(args.images_path + image)
+        im_gray=cv2.imread(args.images_path + image, cv2.IMREAD_GRAYSCALE)
+        label, bndboxs = metalImperfections.recognize(im_gray)
         # Read the image to show it
         image_read = cv.imread(args.images_path + image)
         print("Imagen:", args.images_path + image, "Label y bndboxs", label, bndboxs)
         for x, y, xmax, ymax in bndboxs:
             # Print the bounding boxes in the image to show it
-            cv.rectangle(image_read,(x,y),(xmax,ymax),(200,0,0),2)
-        cv.imshow(label, image_read)
+            cv2.rectangle(image_read,(x,y),(xmax,ymax),(200,0,0),2)
+        cv2.imshow(label, image_read)
         # Wait for user key pressed 
-        cv.waitKey(0)
-        cv.destroyAllWindows()
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
         

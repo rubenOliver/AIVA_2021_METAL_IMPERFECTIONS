@@ -4,18 +4,15 @@ from Localizator import Localizator
 
 class Scratch_localizator(Localizator):
 
-    def localize(self, path_image):
+    def localize(self, image):
         '''
         Method to localize scratches in a image
-        :param path_image: Path to image
+        :param image: Image to be detect
         :return: List with the bounding boxes
         '''
-        # Read the image
-        # image = cv.imread(path_image)
-        image = path_image.copy()
 
         # Convert the image to gray scale
-        gray = cv.cvtColor(image,cv.COLOR_BGR2GRAY)
+        gray = cv.cvtColor(image.copy(), cv.COLOR_BGR2GRAY)
         filteredImage = cv.blur(gray, (13, 13))
         filteredImage = cv.subtract(gray, filteredImage)
         # cv.imshow('sub', filteredImage)

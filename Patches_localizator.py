@@ -3,17 +3,15 @@ import numpy as np
 from Localizator import Localizator
 class Patches_localizator(Localizator):
     
-    def localize(self, path_image):
+    def localize(self, image):
         '''
         Method to localize patches in a image
-        :param path_image: Path to image
+        :param image: Image to be detect
         :return: List with the bounding boxes
         '''
-        # Read the image
-        # image = cv.imread(path_image)
-        image = path_image.copy()
+
         # Convert image to hsv colour space
-        hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
+        hsv = cv.cvtColor(image.copy(), cv.COLOR_BGR2HSV)
         # cv.imshow('hsv', hsv)
 
         # Binarize image with adaptative threshold mean to highlight the darkest areas 

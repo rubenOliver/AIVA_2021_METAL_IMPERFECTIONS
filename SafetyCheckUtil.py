@@ -17,14 +17,13 @@ class MetalImperfectionsUtil:
     valid_labels = ['inclusion', 'patches', 'scratches'] # Classes to detect
     other_label = 'other' # Nlternative class name
 
-    def read_one_image(self, file_path):
+    def read_one_image(self, image):
         '''
         Read an image in correct format to work with neural network
-        :param file_path: Path of the image
+        :param image: Input image
         :return: Return a numpy array with the image in grayscale format
         '''
-        # im_gray=cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
-        im_gray = cv2.cvtColor(file_path, cv2.COLOR_RGB2GRAY)
+        im_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         x_data=np.zeros((1, im_gray.shape[0], im_gray.shape[1]), np.uint8)
         x_data[0,:,:] = im_gray
         return x_data
