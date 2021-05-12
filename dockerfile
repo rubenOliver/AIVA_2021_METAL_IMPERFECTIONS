@@ -15,7 +15,6 @@ COPY ./SafetyCheckUtil.py /opt/application/SafetyCheckUtil.py
 COPY ./Scratch_localizator.py /opt/application/Scratch_localizator.py
 COPY ./server.py /opt/application/server.py
 COPY ./aiva.jar /opt/application/aiva.jar
-COPY ./MyCanvas.class /opt/application/MyCanvas.class
 COPY ./server.sh /opt/application/server.sh
 RUN mkdir /opt/application/CNN_UTIL
 COPY ./CNN_UTIL/weights_improvement.52-0.0150.h5 /opt/application/CNN_UTIL/weights_improvement.52-0.0150.h5
