@@ -20,8 +20,7 @@ if __name__ == '__main__':
         image_read = cv2.imread(args.images_path + image, cv2.IMREAD_COLOR)
         label, bndboxs = metalImperfections.recognize(image_read)
 
-        # Read the image to show it
-        #image_read = cv2.imread(args.images_path + image)
+        # Show image
         print("Imagen:", args.images_path + image, "Label y bndboxs", label, bndboxs)
         for x, y, xmax, ymax in bndboxs:
             # Print the bounding boxes in the image to show it

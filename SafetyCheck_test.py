@@ -124,8 +124,8 @@ class TestMetalTrain(unittest.TestCase):
 
             bndboxs = __get_gt_bndbox__(path_anno)
             patches_localizator = Patches_localizator()
-            im_gray = cv2.imread(path_image, cv2.IMREAD_COLOR)
-            bb_results = patches_localizator.localize(im_gray)
+            image = cv2.imread(path_image, cv2.IMREAD_COLOR)
+            bb_results = patches_localizator.localize(image)
             
             # Sum of all IOU means for each image
             intersectionTotal += __get_intersection__(bb_results, bndboxs)
@@ -159,8 +159,8 @@ class TestMetalTrain(unittest.TestCase):
                                      'ANNOTATIONS',
                                      file_name + '.xml')
             scratch_localizator = Scratch_localizator()
-            im_gray = cv2.imread(path_image, cv2.IMREAD_COLOR)
-            bb_results = scratch_localizator.localize(im_gray)
+            image = cv2.imread(path_image, cv2.IMREAD_COLOR)
+            bb_results = scratch_localizator.localize(image)
 
             bndboxs = __get_gt_bndbox__(path_anno)
             intersectionTotal += __get_intersection__(bb_results, bndboxs)
@@ -183,8 +183,8 @@ class TestMetalTrain(unittest.TestCase):
         total = 0
         for test_file in test_files:
             path_image = os.path.join(TestMetalTrain.dir_path,'IMAGES/'+test_file[0])
-            im_gray = cv2.imread(path_image, cv2.IMREAD_COLOR)
-            label, bounding_boxes = mi.recognize(im_gray)
+            image = cv2.imread(path_image, cv2.IMREAD_COLOR)
+            label, bounding_boxes = mi.recognize(image)
             total += 1
             if label == test_file[1]:
                 success += 1
@@ -192,8 +192,9 @@ class TestMetalTrain(unittest.TestCase):
                 failure += 1
 
         total = success + failure
-
-        self.assertTrue(1.0 * success / total > 0.95)
+        
+        print("Recognize score", success / total)
+        self.assertTrue(success / total > 0.95)
 
 
 if __name__ == '__main__':
